@@ -215,7 +215,10 @@ dfloat BPAxOperator(BP_t* BP, occa::memory &o_lambda, occa::memory &o_q, occa::m
   //  if(BP->profiling) timer::toc("AxGs");
   //} else {
     if(BP->profiling) timer::tic("Ax");
-    kernel(mesh->Nelements, BP->fieldOffset, mesh->o_ggeo, mesh->o_D, o_lambda, o_q, o_Aq);
+    if(BP->Nfields == 1 || BP->Nfields == 3)
+      kernel(mesh->Nelements, BP->fieldOffset, mesh->o_ggeo, mesh->o_D, o_lambda, o_q, o_Aq);
+    else
+      kernel(mesh->Nelements, BP->Nfields, BP->fieldOffset, mesh->o_ggeo, mesh->o_D, o_lambda, o_q, o_Aq);
     if(BP->profiling) timer::toc("Ax");
 
     if(BP->profiling) timer::tic("gs");

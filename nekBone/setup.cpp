@@ -315,8 +315,11 @@ void solveSetup(BP_t* BP, occa::properties &kernelInfo)
     kernelName += "Partial";
   if(BP->BPid)
     kernelName += "_bk";
-  if(BP->Nfields > 1) 
+  if(BP->Nfields == 3) 
     kernelName += "_n" + std::to_string(BP->Nfields);
+  else if(BP->Nfields > 1)
+    kernelName += "_nn";
+
   kernelName += "_v" + std::to_string(knlId);
   BP->BPKernel[0] = loadAxKernel(mesh->device,
                                  threadModel,
