@@ -199,7 +199,7 @@ fCppFlag       = $(call fCompilerCppFlag)
 ifdef GITHUB_ACTIONS
   ifeq ($(usingLinux),1)
     ifeq ($(vendor),GCC)
-      releaseFlags := $(filter-out -march=native,$(releaseFlags))
+      releaseFlags := $(filter-out -mcpu=native,$(releaseFlags))
     endif
   endif
 endif

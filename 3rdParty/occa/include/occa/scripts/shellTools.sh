@@ -267,12 +267,12 @@ function compilerReleaseFlags {
     local vendor=$(compilerVendor "$1")
 
     case "$vendor" in
-        GCC|LLVM)   echo " -O3 -march=native -D __extern_always_inline=inline" ;;
+        GCC|LLVM)   echo " -O3 -mcpu=native -D __extern_always_inline=inline" ;;
         INTEL)      echo " -O3 -xHost"                                         ;;
         CRAY)       echo " -O3 -h intrinsics -fast"                            ;;
         IBM)        echo " -O3 -qhot=simd"                                     ;;
         PGI)        echo " -O3 -fast -Mipa=fast,inline -Msmartalloc"           ;;
-        PATHSCALE)  echo " -O3 -march=auto"                                    ;;
+        PATHSCALE)  echo " -O3 -mcpu=auto"                                    ;;
         HP)         echo " +O3"                                                ;;
         *)          ;;
     esac

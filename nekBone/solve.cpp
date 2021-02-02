@@ -68,9 +68,9 @@ int BPPCG(BP_t* BP, occa::memory &o_lambda,
   dfloat pAp = BPAxOperator(BP, o_lambda, o_x, o_Ax, dfloatString);
   BPScaledAdd(BP, -1.f, o_Ax, 1.f, o_r);
 
-  if(BP->profiling) timer::tic("preco");
-  if(options.compareArgs("PRECONDITIONER", "JACOBI")) updateJacobi(BP, o_lambda, BP->o_invDiagA);
-  if(BP->profiling) timer::toc("preco");
+  //if(BP->profiling) timer::tic("preco");
+  //if(options.compareArgs("PRECONDITIONER", "JACOBI")) updateJacobi(BP, o_lambda, BP->o_invDiagA);
+  //if(BP->profiling) timer::toc("preco");
 
   int iter;
   for(iter = 1; iter <= MAXIT; ++iter) {
@@ -170,11 +170,11 @@ void BPPreconditioner(BP_t* BP, occa::memory &o_lambda, occa::memory &o_r, occa:
   setupAide &options = BP->options;
 
   if(BP->profiling) timer::tic("preco");
-  if(options.compareArgs("PRECONDITIONER", "JACOBI")) {
-    BP->dotMultiplyKernel(BP->Nfields*BP->fieldOffset, o_r, BP->o_invDiagA, o_z);
-  } else {
+  //if(options.compareArgs("PRECONDITIONER", "JACOBI")) {
+  //  BP->dotMultiplyKernel(BP->Nfields*BP->fieldOffset, o_r, BP->o_invDiagA, o_z);
+  //} else {
     BP->vecCopyKernel(BP->Nfields*BP->fieldOffset, o_r, o_z);
-  }
+  //}
   if(BP->profiling) timer::toc("preco");
 }
 
@@ -186,46 +186,45 @@ dfloat BPAxOperator(BP_t* BP, occa::memory &o_lambda, occa::memory &o_q, occa::m
   oogs_t* ogs = (oogs_t*) BP->ogs;
   occa::kernel &kernel = BP->BPKernel[0];
 
-  if(BP->overlap) {
-    if(BP->profiling) timer::tic("Ax1");
-    if(mesh->NglobalGatherElements)
-      kernel(mesh->NglobalGatherElements,
-             BP->fieldOffset,
-             mesh->o_globalGatherElementList,
-             mesh->o_ggeo,
-             mesh->o_D,
-             o_lambda,
-             o_q,
-             o_Aq);
-    if(BP->profiling) timer::toc("Ax1");
+  //if(BP->overlap) {
+  //  if(BP->profiling) timer::tic("Ax1");
+  //  if(mesh->NglobalGatherElements)
+  //    kernel(mesh->NglobalGatherElements,
+  //           BP->fieldOffset,
+  //           mesh->o_globalGatherElementList,
+  //           mesh->o_ggeo,
+  //           mesh->o_D,
+  //           o_lambda,
+  //           o_q,
+  //           o_Aq);
+  //  if(BP->profiling) timer::toc("Ax1");
 
-    if(BP->profiling) timer::tic("AxGs");
-    oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
-    if(BP->profiling) timer::tic("Ax2");
-    kernel(mesh->NlocalGatherElements,
-           BP->fieldOffset,
-           mesh->o_localGatherElementList,
-           mesh->o_ggeo,
-           mesh->o_D,
-           o_lambda,
-           o_q,
-           o_Aq);
-    if(BP->profiling) timer::toc("Ax2");
-    oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
-    if(BP->profiling) timer::toc("AxGs");
-  } else {
+  //  if(BP->profiling) timer::tic("AxGs");
+  //  oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+  //  if(BP->profiling) timer::tic("Ax2");
+  //  kernel(mesh->NlocalGatherElements,
+  //         BP->fieldOffset,
+  //         mesh->o_localGatherElementList,
+  //         mesh->o_ggeo,
+  //         mesh->o_D,
+  //         o_lambda,
+  //         o_q,
+  //         o_Aq);
+  //  if(BP->profiling) timer::toc("Ax2");
+  //  oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+  //  if(BP->profiling) timer::toc("AxGs");
+  //} else {
     if(BP->profiling) timer::tic("Ax");
     kernel(mesh->Nelements, BP->fieldOffset, mesh->o_ggeo, mesh->o_D, o_lambda, o_q, o_Aq);
     if(BP->profiling) timer::toc("Ax");
 
     if(BP->profiling) timer::tic("gs");
-
-    //ogs_t *ogs = (ogs_t*)((oogs_t*)BP->ogs)->ogs;
-    //ogsGatherScatterMany(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
-    oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
-    oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+    ogs_t *ogs_ = (ogs_t*)(ogs->ogs);
+    ogsGatherScatterMany(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs_);
+    //oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+    //oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
     if(BP->profiling) timer::toc("gs");
-  }
+  //}
 
   if(BP->profiling) timer::tic("dot2");
   dfloat pAp = BPWeightedInnerProduct(BP, BP->o_invDegree, o_q, o_Aq);
