@@ -152,7 +152,7 @@
         }
       }
     }
-  }
+  } // e
 }
 
 @kernel void axhelmPartial_v0(const dlong Nelements,

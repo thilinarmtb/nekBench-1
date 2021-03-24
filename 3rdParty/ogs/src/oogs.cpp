@@ -318,7 +318,7 @@ void oogs::finish(occa::memory o_v, const int k, const dlong stride, const char 
     timer::tic("gsMPI",1);
 #endif
     if(gs->mode == OOGS_DEFAULT) {
-      void* H[10];
+      void* H[64];
       for (int i=0;i<k;i++) H[i] = (char*)ogs::haloBuf + i*ogs->NhaloGather*Nbytes;
       ogsHostGatherScatterMany(H, k, type, op, ogs->haloGshSym);
     } else {

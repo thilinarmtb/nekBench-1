@@ -223,9 +223,9 @@ dfloat BPAxOperator(BP_t* BP, occa::memory &o_lambda, occa::memory &o_q, occa::m
 
     if(BP->profiling) timer::tic("gs");
     ogs_t *ogs_ = (ogs_t*)(ogs->ogs);
-    ogsGatherScatterMany(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs_);
-    //oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
-    //oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+    //ogsGatherScatterMany(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs_);
+    oogs::start(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
+    oogs::finish(o_Aq, BP->Nfields, BP->fieldOffset, ogsDfloat, ogsAdd, ogs);
     if(BP->profiling) timer::toc("gs");
   //}
 
